@@ -12,11 +12,14 @@ void setup(){
    pinMode(buttonBPin, INPUT_PULLUP);  
 }
 void loop(){
+  // TODO write time stamp
+  Serial.write(0); Serial.write(0); Serial.write(0);
+  Serial.write(2);
   analogRead(1); int val2 = analogRead(1);
-  Serial.write(map(val2, 0, 1023, 0, 255));
+  Serial.write(val2/256); Serial.write(val2%256);
+  Serial.write(1);
   analogRead(0); int val1 = analogRead(0);
-  Serial.write(map(val1, 0, 1023, 0, 255));
-
+  Serial.write(val1/256); Serial.write(val1%256);
 
   // button read more often (every 10 ms previously) 
   buttonAState = digitalRead(buttonAPin);

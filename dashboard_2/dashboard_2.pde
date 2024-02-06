@@ -1,4 +1,6 @@
 import processing.serial.*;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 Serial serial = new Serial(this, "/dev/ttyUSB0", 9600);
 Sensor sensor1 = new Sensor(1, new Point(50,50,0));
@@ -7,7 +9,7 @@ Sensor sensor2 = new Sensor(2, new Point(450,200,0));
 void setup(){
   surface.setLocation(0,0);
   size(500,810);
-  serial.buffer(2);
+  serial.buffer(4);
 }
 
 void draw(){
@@ -17,12 +19,17 @@ void draw(){
     sensor2.printValues();
     sensor1.drawFloor(color(0,0,255));
     sensor2.drawFloor(color(255,0,0));
+    sensor1.drawDiagram(color(0,0,255));
+    sensor2.drawDiagram(color(255,0,0));
     noLoop();
 }
 
 void serialEvent(Serial serial){
-    sensor1.last = new Measure(millis(), serial.read());
-    sensor2.last = new Measure(millis(), serial.read());
+    // TODO read sensor ID, time    
+    sensor1.last.poll();
+    sensor1.last.add(new Measure(millis(), serial.read()*256+serial.read()));
+    sensor2.last.poll();
+    sensor2.last.add(new Measure(millis(), serial.read()*256+serial.read()));
     redraw();
 }
 

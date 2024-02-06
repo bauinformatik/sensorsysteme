@@ -9,7 +9,7 @@ Sensor sensor2 = new Sensor(2, new Point(450,200,0));
 void setup(){
   surface.setLocation(0,0);
   size(500,810);
-  serial.buffer(2);
+  serial.buffer(4);
 }
 
 void draw(){
@@ -45,9 +45,9 @@ void draw(){
 
 void serialEvent(Serial serial){
     sensor1.last.poll();
-    sensor1.last.add(new Measure(millis(), serial.read()));
+    sensor1.last.add(new Measure(millis(), serial.read()*256+serial.read()));
     sensor2.last.poll();
-    sensor2.last.add(new Measure(millis(), serial.read()));
+    sensor2.last.add(new Measure(millis(), serial.read()*256+serial.read()));
     redraw();
 }
 

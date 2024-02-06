@@ -1,13 +1,21 @@
 import processing.serial.*;
 
-Serial serial = new Serial(this, "/dev/ttyUSB0", 9600);
+Serial serial = new Serial(this, "/dev/ttyUSB1", 9600);
 Sensor sensor1 = new Sensor(1);
 Sensor sensor2 = new Sensor(2);
 
 void setup(){
   surface.setLocation(0,0);
   size(500,810);
-  serial.buffer(2);
+  // findStopBytes();
+  serial.buffer(6);
+}
+
+void findStopBytes(){
+  serial.readBytesUntil(0);
+  if(!(serial.read()==0 && serial.read()==0 )){
+    findStopBytes();
+  }
 }
 
 void draw(){
@@ -19,8 +27,11 @@ void draw(){
 }
 
 void serialEvent(Serial srl){
-    sensor1.last = new Measure(millis(), srl.read());
-    sensor2.last = new Measure(millis(), srl.read());
+      // TODO read time
+    srl.read(); // sensor ID
+    sensor1.last = new Measure(millis(), srl.read()*256 + srl.read());
+    srl.read(); // sensor ID
+    sensor2.last = new Measure(millis(), srl.read()*256 + srl.read());
     redraw();
 }
 
